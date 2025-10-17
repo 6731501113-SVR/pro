@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>📚 Book Collection</h1>
+
+{% if error %}
+    <p style="color:red;">เกิดข้อผิดพลาด: {{ error }}</p>
+{% endif %}
+
+{% if BAllrows %}
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>ชื่อหนังสือ</th>
+            <th>รายละเอียด</th>
+            <th>จำนวน</th>
+        </tr>
+        {% for book in BAllrows %}
+        <tr>
+            <td>{{ book.B_ID }}</td>
+            <td>{{ book.B_NAME }}</td>
+            <td>{{ book.OUTLINE }}</td>
+            <td>{{ book.NUM }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>ไม่มีข้อมูลในฐานข้อมูล</p>
+{% endif %}
+{% endblock %}
