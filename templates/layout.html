@@ -16,7 +16,8 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
     <div class="container-fluid">
-      <h1 style="background: linear-gradient(to right, red, orange, yellow, green, blue, purple); -webkit-background-clip: text; color: transparent; font-weight: bold;">
+      <h1
+        style="background: linear-gradient(to right, red, orange, yellow, green, blue, purple); -webkit-background-clip: text; color: transparent; font-weight: bold;">
         Book Rental!
       </h1>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -38,6 +39,16 @@
     </div>
   </nav>
   <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
     {% block content%}
 
     {% endblock%}

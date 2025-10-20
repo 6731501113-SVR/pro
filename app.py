@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 import mysql.connector
 from mysql.connector import Error
 
-
+#Database Connection Setup
 app = Flask(__name__)
+app.secret_key = 'my_secret_key_here'
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -13,7 +14,7 @@ def get_db_connection():
         database="book"
     )
 
-
+#ROUTES             
 @app.route('/')
 def index():
     conn = None
@@ -37,7 +38,33 @@ def index():
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM users WHERE GMAIL = %s AND USER_PASSWORD = %s", (email, password))
+            user = cursor.fetchone()
+
+            if user:
+                flash(f"✅ Welcome {user['FIRST_NAME']}!", "success")
+                return redirect(url_for('p1'))  # ไปหน้าหลักหลังล็อกอิน
+            else:
+                flash("❌ Invalid email or password", "danger")
+
+        except Error as e:
+            flash(f"❌ Database error: {e}", "danger")
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    return render_template('login.html')
 
 @app.route('/p1')
 def p1():
