@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="192.168.1.149",   
-        user="root",
-        password="",
+        host="192.168.1.149",  
+        user="test",
+        password="test",
         database="test"
     )
 
@@ -20,7 +20,7 @@ def index():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM book_test")
+        cursor.execute("SELECT * FROM book")
         books = cursor.fetchall()
         return render_template("index.html", books=books)
 
@@ -45,7 +45,7 @@ def p1():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM book_test")
+        cursor.execute("SELECT * FROM book")
         books = cursor.fetchall()
         print("✅ BOOK data fetched:", books)  # ดูใน console
         return render_template("p1.html", BAllrows=books)

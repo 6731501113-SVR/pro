@@ -3,70 +3,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BookRent</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        border-bottom: 1px solid #ccc;
-    }
-
-    .nav-links a {
-        margin-right: 20px;
-        text-decoration: none;
-        color: #333;
-    }
-
-    .user-profile {
-        display: flex;
-        align-items: center;
-    }
-
-    .user-profile img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
     .main {
         padding: 20px;
     }
 
+    /* Carousel Styles */
     .carousel {
-        height: 250px;
+        
+        height: 400px;
         background-color: #ddd;
+        border: 5px solid #ccc;
         margin-bottom: 20px;
     }
 
-    /* Carousel Styles */
     .carousel-container {
         position: relative;
         width: 100%;
-        max-width: 100%;
         overflow: hidden;
+        max-width: 100%; 
         margin-bottom: 30px;
+        
     }
 
     .carousel-track {
         display: flex;
-        width: calc(300px * 4);
-        /* 10 slides now */
-        animation: slideLeft 15s linear infinite;
+        height: 320px;
+        width: calc(300px * 10);
+        /* 5 books × 2 */
+        animation: slideLeft 10s linear infinite;
     }
 
     .carousel-track img {
-        width: 300px;
-        height: 480px;
-        object-fit: cover;
+        height: auto;
+        width: 290;
+        object-fit: contain;  
         flex-shrink: 0;
+        margin-right: 10px;
     }
 
     @keyframes slideLeft {
@@ -87,24 +59,29 @@
     }
 
     .book-grid {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
     }
 
     .book-card {
-        width: 100px;
-        height: 150px;
-        background-color: #eee;
+        width: 200px;
+        height: 310px;
+        background-color: #ffffff;
         display: flex;
         justify-content: center;
+        text-align: center;
         align-items: center;
+        flex-direction: column;
         border: 1px solid #ccc;
     }
-
-    .search-bar {
-        margin-bottom: 20px;
-    }
+    .book-card img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: cover; /* Use 'contain' if you want to keep full image without cropping */
+    margin-bottom: 0px;
+}
 </style>
 
 
@@ -113,31 +90,35 @@
 
 
     <div class="carousel">
-        <!-- Carousel Placeholder -->
-        <p style="text-align:center;">Featured Books</p>
+        <h1 style="text-align:center; margin-top: 5px; margin-bottom: 5px;">
+            New Arrival
+        </h1>
         <div class="container-items">
-            <!-- Carousel con -->
             <div class="carousel-container">
                 <div class="carousel-track">
-                    {% for book in books %}
+                    {% if books|length >= 5 %}
+                    {% for book in books[:5] %}
                     <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
-                    {% else %}
-                    <p style="text-align:center;">No images found in database.</p>
                     {% endfor %}
-                    {% for book in books %}
+                    {% for book in books[:5] %}
                     <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
-                    {% else %}
-                    <p style="text-align:center;">No images found in database.</p>
                     {% endfor %}
+                    {% else %}
+                    <p style="text-align:center;">No featured books available.</p>
+                    {% endif %}
                 </div>
             </div>
-
         </div>
     </div>
 
     <div class="section-title">Recommendations</div>
     <div class="book-grid">
-        <div class="book-card">Book 1</div>
+        {% for book in books%}
+        <div class="book-card"><!-- ตรงนี้ค่อยเปลี่ยนไปดึงจาก Database-->
+            <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
+            <div>book id : {{ book.book_ID }}</div>
+        </div>
+        {% endfor %}
         <div class="book-card">Book 2</div>
         <div class="book-card">Book 3</div>
         <div class="book-card">Book 4</div>
