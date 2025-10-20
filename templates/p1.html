@@ -12,14 +12,14 @@
             <th>ID</th>
             <th>ชื่อหนังสือ</th>
             <th>รายละเอียด</th>
-            <th>จำนวน</th>
+            <th>ISBN</th>
         </tr>
         {% for book in BAllrows %}
         <tr>
-            <td>{{ book.B_ID }}</td>
-            <td>{{ book.B_NAME }}</td>
-            <td>{{ book.OUTLINE }}</td>
-            <td>{{ book.NUM }}</td>
+            <td>{{ book.BOOKID }}</td>
+            <td>{{ book.BOOKNAME }}</td>
+            <td>{{ book.DESCRIPTION }}</td>
+            <td>{{ book.ISBN }}</td>
         </tr>
         {% endfor %}
     </table>

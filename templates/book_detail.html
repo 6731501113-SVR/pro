@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .book-detail {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        font-family: "Prompt", sans-serif;
+    }
+
+    .book-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .book-header h2 {
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+    .favorite-icon {
+        font-size: 1.5rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .favorite-icon:hover {
+        color: #ffcc00;
+    }
+
+    .book-info {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .book-detail img {
+        width: 220px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid #eee;
+    }
+
+    .book-meta {
+        flex: 1;
+    }
+
+    .book-meta p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .divider {
+        border-top: 2px solid #ccc;
+        margin: 15px 0;
+    }
+
+    .review-section {
+        margin-top: 10px;
+    }
+
+    .review-score {
+        font-weight: bold;
+        color: #444;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        border: 2px solid #3b82f6;
+        color: #3b82f6;
+    }
+
+    .btn-outline:hover {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+</style>
+
+<div class="book-detail">
+    <div class="book-header">
+        <h2>{{ book.BOOKNAME }}</h2>
+        <span class="favorite-icon">★</span>
+    </div>
+
+    <div class="book-info">
+        <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+        <div class="book-meta">
+            <p><strong>ผู้แต่ง:</strong> {{ book.WRITER }}</p>
+            <p><strong>สำนักพิมพ์:</strong> {{ book.PUBLISHER }}</p>
+            <p><strong>หมวดหมู่:</strong> {{ book.CATEGORIES }}</p>
+            <p><strong>ISBN:</strong> {{ book.ISBN }}</p>
+            <p><strong>จำนวนหน้า:</strong> {{ book.PAGES }}</p>
+            <p><strong>พิมพ์ครั้งที่:</strong> {{ book.EDITION }}</p>
+            <p><strong>วันที่ออก:</strong> {{ book.BOOKDATE }}</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="description">
+        <p><strong>คำอธิบาย:</strong></p>
+        <p>{{ book.DESCRIPTION }}</p>
+    </div>
+
+    <div class="review-section">
+        <p><strong>Review:</strong> ★★★★★ <span class="review-score">5/5</span></p>
+    </div>
+
+    <div class="buttons">
+        <button class="btn btn-outline">ทดลองอ่าน</button>
+        <button class="btn btn-primary">ยืมหนังสือ</button>
+    </div>
+</div>
+{% endblock %}

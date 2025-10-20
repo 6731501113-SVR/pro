@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    body {
+        background-color: #f5f6fa;
+        font-family: "Prompt", sans-serif;
+    }
+
+    .register-container {
+        width: 400px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    input:focus {
+        border-color: #3b82f6;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #3b82f6;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #2563eb;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    .login-link a {
+        color: #3b82f6;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .flash {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .flash.success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .flash.danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+</style>
+
+<div class="register-container">
+    <h2>Registeration</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" id="first_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" id="last_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="gmail">E-Mail:</label>
+            <input type="email" name="gmail" id="gmail" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="birthday">Birthday:</label>
+            <input type="date" name="birthday" id="birthday">
+        </div>
+
+        <button type="submit">สมัครสมาชิก</button>
+
+        <div class="login-link">
+            มีบัญชีอยู่แล้ว? <a href="{{ url_for('login') }}">เข้าสู่ระบบ</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

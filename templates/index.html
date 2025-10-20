@@ -9,46 +9,49 @@
 
     /* Carousel Styles */
     .carousel {
-        
         height: 400px;
-        background-color: #ddd;
-        border: 5px solid #ccc;
+        background-color: #ffeaca;
+        border: 5px solid #000000;
         margin-bottom: 20px;
+        overflow: hidden;
+        position: relative;
     }
 
     .carousel-container {
-        position: relative;
         width: 100%;
         overflow: hidden;
-        max-width: 100%; 
-        margin-bottom: 30px;
-        
+        position: relative;
     }
 
     .carousel-track {
         display: flex;
-        height: 320px;
-        width: calc(300px * 10);
-        /* 5 books × 2 */
-        animation: slideLeft 10s linear infinite;
+        width: max-content;
+        /* ปรับอัตโนมัติตามจำนวนรูป */
+        animation: scroll 10s linear infinite;
     }
 
     .carousel-track img {
-        height: auto;
-        width: 290;
-        object-fit: contain;  
-        flex-shrink: 0;
+        height: 300px;
+        width: auto;
+        object-fit: fill;
+        margin-right: 10;
         margin-right: 10px;
+        border-radius: 4px;
     }
 
-    @keyframes slideLeft {
+    @keyframes scroll {
         0% {
             transform: translateX(0);
         }
 
         100% {
-            transform: translateX(-1500px);
+            transform: translateX(-50%);
         }
+    }
+
+    /* หยุด animation เมื่อ hover */
+    .carousel-track:hover {
+        animation-play-state: paused;
     }
 
     .section-title {
@@ -59,14 +62,15 @@
     }
 
     .book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+        display: grid;
+        margin-right: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
     }
 
     .book-card {
-        width: 200px;
-        height: 310px;
+        width: 250px;
+        height: 350px;
         background-color: #ffffff;
         display: flex;
         justify-content: center;
@@ -75,16 +79,34 @@
         flex-direction: column;
         border: 1px solid #ccc;
     }
+
     .book-card img {
-    width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: cover; /* Use 'contain' if you want to keep full image without cropping */
-    margin-bottom: 0px;
-}
+        width: 200px;
+        height: auto;
+        max-height: 300px;
+        object-fit: cover;
+        /* Use 'contain' if you want to keep full image without cropping */
+        margin-bottom: 0px;
+    }
 </style>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const track = document.querySelector(".carousel-track");
+        let scrollAmount = 0;
 
+        function loopCarousel() {
+            scrollAmount += 1;
+            if (scrollAmount >= track.scrollWidth / 2) {
+                scrollAmount = 0; // reset เมื่อครึ่งหนึ่งของแทร็กหมด
+            }
+            track.style.transform = `translateX(-${scrollAmount}px)`;
+            requestAnimationFrame(loopCarousel);
+        }
+
+        loopCarousel();
+    });
+</script>
 
 <div class="main">
 
@@ -96,16 +118,12 @@
         <div class="container-items">
             <div class="carousel-container">
                 <div class="carousel-track">
-                    {% if books|length >= 5 %}
                     {% for book in books[:5] %}
-                    <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
+                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
                     {% endfor %}
                     {% for book in books[:5] %}
-                    <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
+                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
                     {% endfor %}
-                    {% else %}
-                    <p style="text-align:center;">No featured books available.</p>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -113,15 +131,14 @@
 
     <div class="section-title">Recommendations</div>
     <div class="book-grid">
-        {% for book in books%}
-        <div class="book-card"><!-- ตรงนี้ค่อยเปลี่ยนไปดึงจาก Database-->
-            <img src="{{ book.book_image_link }}" alt="Book {{ book.book_ID }}">
-            <div>book id : {{ book.book_ID }}</div>
+        {% for book in books %}
+        <div class="book-card">
+            <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
+                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                <div>{{ book.BOOKNAME }}</div>
+            </a>
         </div>
         {% endfor %}
-        <div class="book-card">Book 2</div>
-        <div class="book-card">Book 3</div>
-        <div class="book-card">Book 4</div>
     </div>
 
     <div class="section-title">Top Rentals</div>
