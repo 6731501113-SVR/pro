@@ -91,10 +91,10 @@ def book():
         cursor.execute("SELECT * FROM book")
         books = cursor.fetchall()
         print("✅ BOOK data fetched:", books)  # ดูใน console
-        return render_template("book.html", BAllrows=books)
+        return render_template("book.html", books=books)
     except Exception as e:
         print(f"❌ Database error: {e}")
-        return render_template("book.html", BAllrows=[], error=str(e))
+        return render_template("book.html", books=[], error=str(e))
     finally:
         if cursor:
             cursor.close()
