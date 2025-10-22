@@ -8,7 +8,7 @@ app.secret_key = 'my_secret_key_here'
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",  
+        host="192.168.1.167",  
         user="test",
         password="test",
         database="book"
@@ -36,7 +36,7 @@ def index():
         if conn:
             conn.close()
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -51,8 +51,12 @@ def login():
             user = cursor.fetchone()
 
             if user:
+                #เก็บ session ของผู้ใช้
+                session['user_id'] = user['USER_ID']
+                session['user_name'] = user['FIRST_NAME']
+
                 flash(f"✅ Welcome {user['FIRST_NAME']}!", "success")
-                return redirect(url_for('p1'))  # ไปหน้าหลักหลังล็อกอิน
+                return redirect('/')
             else:
                 flash("❌ Invalid email or password", "danger")
 
@@ -66,8 +70,19 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/p1')
-def p1():
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("👋 Logged out successfully", "info")
+    return redirect(url_for('login'))
+
+@app.route('/book')
+def book():
+    #เช็คว่า Login session อยู่รึเปล่า เดี๋ยวเอาไปใส่ตรงอื่น
+    if 'user_id' not in session:
+        flash("⚠️ Please log in first", "warning")
+        return redirect(url_for('login'))
+
     conn = None
     cursor = None
     try:
@@ -76,10 +91,10 @@ def p1():
         cursor.execute("SELECT * FROM book")
         books = cursor.fetchall()
         print("✅ BOOK data fetched:", books)  # ดูใน console
-        return render_template("p1.html", BAllrows=books)
+        return render_template("book.html", BAllrows=books)
     except Exception as e:
         print(f"❌ Database error: {e}")
-        return render_template("p1.html", BAllrows=[], error=str(e))
+        return render_template("book.html", BAllrows=[], error=str(e))
     finally:
         if cursor:
             cursor.close()

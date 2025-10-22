@@ -20,24 +20,45 @@
         style="background: linear-gradient(to right, red, orange, yellow, green, blue, purple); background-clip: border-box; -webkit-background-clip: text; color: transparent; font-weight: bold;">
         Book Rental!
       </h1>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- เมนูฝั่งซ้าย -->
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/p1">Book</a>
+            <a class="nav-link" href="/book">Book</a>
+          </li>
+        </ul>
+
+        <!-- เมนูฝั่งขวา -->
+        {% if session.get('user_name') %}
+        <ul class="navbar-nav ms-auto d-flex align-items-center">
+          <li class="nav-item me-2 text-light">
+            Welcome, {{ session['user_name'] }}!
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
         </ul>
+        {% else %}
+        <ul class="navbar-nav ms-auto d-flex align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+        </ul>
+        {% endif %}
       </div>
+
     </div>
   </nav>
+
   <main>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -48,11 +69,12 @@
     </div>
     {% endif %}
     {% endwith %}
-    
+
     {% block content%}
 
     {% endblock%}
   </main>
+
   <style>
     .navbar {
       background-color: #5e5e5e;
@@ -60,7 +82,29 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 20px;
-      border-bottom: 0px solid #ccc;
+      border-bottom: 3px solid #ccc;
+    }
+
+    .navbar h1 {}
+
+    .navbar a {
+      color: #ccc;
+      text-decoration: none;
+      margin-right: 15px;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      color: white;
+    }
+
+    .nav-right span {
+      color: white;
+      margin-right: 10px;
+    }
+
+    .nav-right {
+      color: aliceblue;
     }
 
     body {
