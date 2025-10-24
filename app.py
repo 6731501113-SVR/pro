@@ -36,6 +36,27 @@ def index():
         if conn:
             conn.close()
 
+@app.route('/home2')
+def home2():
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM book")
+        books = cursor.fetchall()
+        return render_template("home2.html", books=books)
+
+
+    except Exception as e:
+        print(f"❌ Error fetching books: {e}")
+        return render_template("home2.html", books=[], error=str(e))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -54,6 +75,7 @@ def login():
                 #เก็บ session ของผู้ใช้
                 session['user_id'] = user['USER_ID']
                 session['user_name'] = user['FIRST_NAME']
+                session['user_profile'] = user.get('USER_IMAGE', 'profile.jpg')
 
                 flash(f"‼️ Welcome {user['FIRST_NAME']} ‼️", "success")
                 return redirect('/')

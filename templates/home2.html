@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookRent</title>
+
+<style>
+.main {
+    padding: 20px;
+}
+
+/* Carousel Styles */
+.carousel {
+    margin: 20px auto;
+    max-width: 1000px;
+    border: 4px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.carousel-indicators [data-bs-target] {
+    background-color: #000;
+}
+
+.carousel-caption h5 {
+    color: #fff;
+    font-weight: bold;
+}
+
+.section-title {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.book-grid {
+    display: grid;
+    margin-right: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.book-card {
+    width: 250px;
+    height: 350px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid #ccc;
+}
+
+.book-card img {
+    width: 200px;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    margin-bottom: 0px;
+}
+</style>
+
+<div class="main">
+
+    <!-- Bootstrap Carousel -->
+    <h1 style="text-align:center; margin-top: 5px; margin-bottom: 10px;">New Arrival</h1>
+    <div id="bookCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            {% for i in range(books[:5]|length) %}
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="{{ i }}"
+                class="{% if i == 0 %}active{% endif %}" aria-current="{% if i == 0 %}true{% endif %}"
+                aria-label="Slide {{ i + 1 }}"></button>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-inner">
+            {% for book in books[:5] %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ book.BOOKIMAGE }}" class="d-block w-100" alt="Book {{ book.BOOKID }}"
+                    style="height:400px; object-fit:cover;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2">
+                    <h5>{{ book.BOOKNAME }}</h5>
+                    <p>{{ book.WRITER }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- slide button -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div class="section-title">Recommendations</div>
+    <div class="book-grid">
+        {% for book in books %}
+        <div class="book-card">
+            <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
+                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                <div>{{ book.BOOKNAME }}</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-title">Top Rentals</div>
+    <div class="book-grid">
+        <div class="book-card">Book A</div>
+        <div class="book-card">Book B</div>
+        <div class="book-card">Book C</div>
+    </div>
+</div>
+{% endblock %}
