@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session, render_template_string
 import mysql.connector
 from mysql.connector import Error
 
@@ -72,18 +72,37 @@ def login():
             user = cursor.fetchone()
 
             if user:
-                #เก็บ session ของผู้ใช้
+                # เก็บ session ของผู้ใช้
                 session['user_id'] = user['USER_ID']
                 session['user_name'] = user['FIRST_NAME']
                 session['user_profile'] = user.get('USER_IMAGE', 'profile.jpg')
 
+                # 🔹 Check if request comes from iframe (overlay)
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return render_template_string("""
+                        <script>
+                            window.parent.postMessage("login_success", "*");
+                        </script>
+                    """)
+
+                # 🔹 Or simpler — detect by Referer (if needed)
+                if "overlay" in request.referrer or "login" in request.referrer:
+                    return render_template_string("""
+                        <script>
+                            window.parent.postMessage("login_success", "*");
+                        </script>
+                    """)
+
+                # 🔹 Normal web redirect (non-overlay)
                 flash(f"‼️ Welcome {user['FIRST_NAME']} ‼️", "success")
                 return redirect('/')
+
             else:
                 flash("‼️ Invalid email or password ‼️", "danger")
 
         except Error as e:
             flash(f"‼️ Database error: {e} ‼️", "danger")
+
         finally:
             if cursor:
                 cursor.close()
@@ -91,6 +110,7 @@ def login():
                 conn.close()
 
     return render_template('login.html')
+
 
 @app.route('/check_login')
 def check_login():
