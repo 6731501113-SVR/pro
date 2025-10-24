@@ -92,11 +92,16 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/check_login')
+def check_login():
+    return {"logged_in": 'user_id' in session}
+
+
 @app.route('/logout')
 def logout():
     session.clear()
     flash("‼️ Logged out successfully ‼️", "info")
-    return redirect(url_for('login'))
+    return redirect('/')
 
 @app.route('/book')
 def book():

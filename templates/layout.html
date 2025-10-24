@@ -33,8 +33,12 @@
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/book">Book</a>
+            <a class="nav-link active" aria-current="page" href="/home2">Home2(beta)</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" onclick="goToBook()">Book</a>
+          </li>
+
         </ul>
 
         <!-- เมนูฝั่งขวา -->
@@ -54,10 +58,14 @@
         {% else %}
         <ul class="navbar-nav ms-auto d-flex align-items-center">
           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+            <a class="nav-link" href="javascript:void(0)" onclick="openOverlay('/login')">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" onclick="openOverlay('/register')">Register</a>
           </li>
         </ul>
         {% endif %}
+
 
       </div>
 
@@ -118,6 +126,116 @@
 
     }
   </style>
+
+  <!-- This part for popup login and register-->
+  <div id="overlayFrame" class="overlay-frame">
+    <div class="overlay-content">
+      <button id="closeOverlay" class="btn btn-danger btn-sm close-btn">✖</button>
+      <iframe id="overlayIframe" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <style>
+    /* Background dim */
+    .overlay-frame {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Content box */
+    .overlay-content {
+      position: relative;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      width: 450px;
+      max-width: 95%;
+      height: 600px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      animation: popup 0.3s ease-out;
+    }
+
+    @keyframes popup {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* iframe */
+    .overlay-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* close button */
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const overlay = document.getElementById("overlayFrame");
+      const iframe = document.getElementById("overlayIframe");
+      const closeBtn = document.getElementById("closeOverlay");
+
+      // ✅ เปิด overlay พร้อมโหลดหน้า login หรือ register
+      window.openOverlay = function (page) {
+        iframe.src = page;
+        overlay.style.display = "flex";
+      }
+
+      // ✅ ปิด overlay
+      closeBtn.addEventListener("click", () => {
+        overlay.style.display = "none";
+        iframe.src = "";
+      });
+
+      // ✅ เมื่อ iframe (login) ส่งข้อความกลับมาหลัง login เสร็จ
+      window.addEventListener("message", (event) => {
+        if (event.data === "login_success") {
+          overlay.style.display = "none";
+          iframe.src = "";
+          location.reload(); // รีโหลดเพื่ออัปเดตชื่อผู้ใช้
+        }
+      });
+    });
+
+    // ✅ ฟังก์ชันตรวจ login แล้วค่อยเข้า Book
+    async function goToBook() {
+      try {
+        const res = await fetch("/check_login");
+        const data = await res.json();
+
+        if (data.logged_in) {
+          window.location.href = "/book";
+        } else {
+          openOverlay("/login");
+        }
+      } catch (err) {
+        console.error("Error checking login:", err);
+        openOverlay("/login");
+      }
+    }
+  </script>
+
+
 </body>
 
 </html>
