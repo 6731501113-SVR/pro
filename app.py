@@ -8,7 +8,7 @@ app.secret_key = 'my_secret_key_here'
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="192.168.1.167",  
+        host="192.168.1.170",  
         user="test",
         password="test",
         database="book"
@@ -55,13 +55,13 @@ def login():
                 session['user_id'] = user['USER_ID']
                 session['user_name'] = user['FIRST_NAME']
 
-                flash(f"✅ Welcome {user['FIRST_NAME']}!", "success")
+                flash(f"‼️ Welcome {user['FIRST_NAME']} ‼️", "success")
                 return redirect('/')
             else:
-                flash("❌ Invalid email or password", "danger")
+                flash("‼️ Invalid email or password ‼️", "danger")
 
         except Error as e:
-            flash(f"❌ Database error: {e}", "danger")
+            flash(f"‼️ Database error: {e} ‼️", "danger")
         finally:
             if cursor:
                 cursor.close()
@@ -73,14 +73,14 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    flash("👋 Logged out successfully", "info")
+    flash("‼️ Logged out successfully ‼️", "info")
     return redirect(url_for('login'))
 
 @app.route('/book')
 def book():
     #เช็คว่า Login session อยู่รึเปล่า เดี๋ยวเอาไปใส่ตรงอื่น
     if 'user_id' not in session:
-        flash("⚠️ Please log in first", "warning")
+        flash("⚠️ Please log in first ⚠️", "warning")
         return redirect(url_for('login'))
 
     conn = None
@@ -141,7 +141,7 @@ def register():
             flash("✅ Register successful!", "success")
             return redirect(url_for('login'))
         except Error as e:
-            flash(f"❌ Error: {e}", "danger")
+            flash(f"‼️ Error: {e} ‼️", "danger")
         finally:
             if cursor:
                 cursor.close()

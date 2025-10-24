@@ -27,31 +27,16 @@
         display: flex;
         width: max-content;
         /* ปรับอัตโนมัติตามจำนวนรูป */
-        animation: scroll 10s linear infinite;
     }
 
     .carousel-track img {
         height: 300px;
         width: auto;
-        object-fit: fill;
-        margin-right: 10;
+        object-fit: contain;
         margin-right: 10px;
         border-radius: 4px;
-    }
+        flex-shrink: 0;
 
-    @keyframes scroll {
-        0% {
-            transform: translateX(0);
-        }
-
-        100% {
-            transform: translateX(-50%);
-        }
-    }
-
-    /* หยุด animation เมื่อ hover */
-    .carousel-track:hover {
-        animation-play-state: paused;
     }
 
     .section-title {
@@ -85,7 +70,6 @@
         height: auto;
         max-height: 300px;
         object-fit: cover;
-        /* Use 'contain' if you want to keep full image without cropping */
         margin-bottom: 0px;
     }
 </style>
@@ -93,18 +77,24 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const track = document.querySelector(".carousel-track");
-        let scrollAmount = 0;
+        const images = Array.from(track.children);
 
-        function loopCarousel() {
-            scrollAmount += 1;
-            if (scrollAmount >= track.scrollWidth / 2) {
-                scrollAmount = 0; // reset เมื่อครึ่งหนึ่งของแทร็กหมด
+        // ทำซ้ำรูปทั้งหมดอีก 1 ชุด เพื่อให้วนต่อเนื่อง
+        track.innerHTML += track.innerHTML;
+
+        let scrollX = 0;
+        const speed = 0.5; // ปรับความเร็ว (px ต่อ frame)
+
+        function animate() {
+            scrollX += speed;
+            if (scrollX >= track.scrollWidth / 2) {
+                scrollX = 0; // รีเซ็ตเมื่อถึงครึ่งหนึ่ง
             }
-            track.style.transform = `translateX(-${scrollAmount}px)`;
-            requestAnimationFrame(loopCarousel);
+            track.style.transform = `translateX(-${scrollX}px)`;
+            requestAnimationFrame(animate);
         }
 
-        loopCarousel();
+        animate();
     });
 </script>
 
@@ -115,16 +105,14 @@
         <h1 style="text-align:center; margin-top: 5px; margin-bottom: 5px;">
             New Arrival
         </h1>
-        <div class="container-items">
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    {% for book in books[:5] %}
-                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
-                    {% endfor %}
-                    {% for book in books[:5] %}
-                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
-                    {% endfor %}
-                </div>
+        <div class="carousel-container">
+            <div class="carousel-track">
+                {% for book in books[:5] %}
+                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                {% endfor %}
+                {% for book in books[:5] %}
+                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                {% endfor %}
             </div>
         </div>
     </div>

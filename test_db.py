@@ -6,7 +6,7 @@ from app import get_db_connection
 def test_mysql_connection():
     try:
         connection = mysql.connector.connect(
-            host="192.168.1.167",
+            host="192.168.1.170",
             user="test", # ลองใช้ root ก่อน
             password="test" # ลองว่างก่อน
         )
