@@ -124,6 +124,11 @@ def book():
         if conn:
             conn.close()
 
+
+@app.route('/Licence')
+def licence():
+    return render_template('licence.html')
+
 @app.route('/book/<int:book_id>')
 def book_detail(book_id):
     conn = None

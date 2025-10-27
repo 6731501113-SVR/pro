@@ -33,11 +33,13 @@
 
         input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.2s;
+            background: rgb(255, 255, 255);
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            box-shadow: #000000 0px 10px 10px -5px;
+            border-inline: 2px solid transparent;
         }
 
         input:focus {
@@ -45,16 +47,17 @@
         }
 
         button {
+            display: block;
             width: 100%;
-            padding: 10px;
-            background-color: #3b82f6;
-            color: #fff;
+            font-weight: bold;
+            background: linear-gradient(45deg, rgb(133, 84, 0) 0%, rgb(133, 84, 0) 100%);
+            color: white;
+            padding-block: 15px;
+            margin: 20px auto;
+            border-radius: 20px;
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 20px 10px -15px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            transition: all 0.2s ease-in-out;
         }
 
         button:hover {
@@ -134,7 +137,7 @@
             <button type="submit">สมัครสมาชิก</button>
 
             <div class="login-link">
-                มีบัญชีอยู่แล้ว? <a href="{{ url_for('login') }}">เข้าสู่ระบบ</a>
+                Have account already? <a href="{{ url_for('login') }}">Login</a>
             </div>
         </form>
     </div>
