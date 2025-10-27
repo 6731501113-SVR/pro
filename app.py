@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 import mysql.connector
 from mysql.connector import Error
+from dbprofile import host, user, password
 
 #Database Connection Setup
 app = Flask(__name__)
@@ -8,9 +9,9 @@ app.secret_key = 'my_secret_key_here'
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="192.168.1.170",  
-        user="test",
-        password="test",
+        host=host,  
+        user=user,
+        password=password,
         database="book"
     )
 
