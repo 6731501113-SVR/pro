@@ -178,5 +178,62 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/cart')
+def cart():
+    # ดึงตะกร้าจาก session (เก็บเป็น list ของ book_id)
+    cart = session.get('cart', [])
+    books = []
+    if cart:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            query = "SELECT * FROM book WHERE BOOKID IN (%s)" % ','.join(['%s'] * len(cart))
+            cursor.execute(query, tuple(cart))
+            books = cursor.fetchall()
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+    return render_template('cart.html', books=books)
+
+@app.route('/add_to_cart/<int:book_id>')
+def add_to_cart(book_id):
+    cart = session.get('cart', [])
+    if book_id not in cart:
+        cart.append(book_id)
+        session['cart'] = cart
+        flash("✅ เพิ่มหนังสือลงตะกร้าแล้ว", "success")
+    else:
+        flash("⚠️ หนังสือนี้อยู่ในตะกร้าแล้ว", "warning")
+    return redirect(url_for('book_detail', book_id=book_id))
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if request.method == 'POST':
+        flash("💳 ชำระเงินสำเร็จ ขอบคุณที่ใช้บริการ!", "success")
+        session.pop('cart', None)
+        return redirect(url_for('index'))
+    return render_template('checkout.html')
+
+@app.route('/my_books')
+def my_books():
+    if 'user_id' not in session:
+        flash("⚠️ กรุณาเข้าสู่ระบบก่อน", "warning")
+        return redirect(url_for('login'))
+    # ตัวอย่าง: ดึงหนังสือที่ user ยืมไว้ (เชื่อมกับ DB จริงภายหลัง)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT b.* FROM borrowed_books bb
+        JOIN book b ON bb.book_id = b.BOOKID
+        WHERE bb.user_id = %s
+    """, (session['user_id'],))
+    books = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('my_books.html', books=books)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

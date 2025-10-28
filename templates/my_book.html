@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>📚 หนังสือของฉัน</h2>
+  {% if books %}
+  <div class="row mt-3">
+    {% for book in books %}
+    <div class="col-md-3">
+      <div class="card mb-3">
+        <img src="{{ book.BOOKIMAGE }}" class="card-img-top" alt="{{ book.BOOKNAME }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ book.BOOKNAME }}</h5>
+          <p class="card-text">{{ book.WRITER }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>ยังไม่มีหนังสือในชั้นของคุณ</p>
+  {% endif %}
+</div>
+{% endblock %}

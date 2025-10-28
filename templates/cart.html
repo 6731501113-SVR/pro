@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>🛒 ตะกร้าหนังสือของคุณ</h2>
+  {% if books %}
+  <table class="table table-bordered mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>ภาพหนังสือ</th>
+        <th>ชื่อหนังสือ</th>
+        <th>ผู้แต่ง</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td><img src="{{ book.BOOKIMAGE }}" width="80"></td>
+        <td>{{ book.BOOKNAME }}</td>
+        <td>{{ book.WRITER }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('checkout') }}" class="btn btn-success">ไปหน้าชำระเงิน</a>
+  {% else %}
+  <p>🛍️ ยังไม่มีหนังสือในตะกร้า</p>
+  {% endif %}
+</div>
+{% endblock %}
