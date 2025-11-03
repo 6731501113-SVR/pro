@@ -1,16 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container mt-4">
-  <h2>📚 หนังสือของฉัน</h2>
+  <h2>📚 MY BOOK</h2>
   {% if books %}
   <div class="row mt-3">
     {% for book in books %}
     <div class="col-md-3">
-      <div class="card mb-3">
+      <div class="card mb-3 shadow-sm">
         <img src="{{ book.BOOKIMAGE }}" class="card-img-top" alt="{{ book.BOOKNAME }}">
-        <div class="card-body">
+        <div class="card-body text-center">
           <h5 class="card-title">{{ book.BOOKNAME }}</h5>
-          <p class="card-text">{{ book.WRITER }}</p>
+          <p class="card-text text-muted">{{ book.WRITER }}</p>
+          <p class="card-text"><small class="text-secondary">📅 {{ book.ORDER_DATE }}</small></p>
+
+          <!-- ปุ่มคืนหนังสือ -->
+          <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
+            <button type="submit" class="btn btn-danger btn-sm w-100">
+              🔁 Return
+            </button>
+          </form>
         </div>
       </div>
     </div>

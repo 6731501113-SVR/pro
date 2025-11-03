@@ -1,25 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container mt-4">
-  <h2>💳 ชำระเงิน</h2>
-  <form method="post">
-    <div class="mb-3">
-      <label for="fullname" class="form-label">ชื่อ-นามสกุล</label>
-      <input type="text" class="form-control" id="fullname" name="fullname" required>
-    </div>
-    <div class="mb-3">
-      <label for="address" class="form-label">ที่อยู่สำหรับจัดส่ง</label>
-      <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-    </div>
-    <div class="mb-3">
-      <label for="payment" class="form-label">วิธีชำระเงิน</label>
-      <select class="form-select" id="payment" name="payment" required>
-        <option value="credit">บัตรเครดิต</option>
-        <option value="bank">โอนผ่านธนาคาร</option>
-        <option value="cod">เก็บเงินปลายทาง</option>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary">ยืนยันการชำระเงิน</button>
+  <h2>📚 ยืนยันการยืมหนังสือ</h2>
+
+  {% if books %}
+  <div class="table-responsive mt-3">
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>ปกหนังสือ</th>
+          <th>ชื่อหนังสือ</th>
+          <th>ผู้แต่ง</th>
+          <th>ค่าธรรมเนียม</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in books %}
+        <tr>
+          <td><img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}" width="80"></td>
+          <td>{{ book.BOOKNAME }}</td>
+          <td>{{ book.WRITER }}</td>
+          <td>฿10</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert alert-info text-center fs-5">
+    💰 ค่าธรรมเนียมทั้งหมด: <strong>฿{{ total_fee }}</strong>
+  </div>
+
+  <form method="POST" class="text-center mt-3">
+    <button type="submit" class="btn btn-primary btn-lg">
+      ✅ ยืนยันการยืมและชำระเงิน
+    </button>
+    <a href="{{ url_for('cart') }}" class="btn btn-secondary btn-lg">
+      🔙 กลับไปแก้ไขตะกร้า
+    </a>
   </form>
+
+  {% else %}
+  <p>ไม่มีหนังสือในตะกร้า</p>
+  {% endif %}
 </div>
 {% endblock %}

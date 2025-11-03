@@ -31,7 +31,7 @@
     }
 </style>
 {% if error %}
-<p style="color:red;">เกิดข้อผิดพลาด: {{ error }}</p>
+<p style="color:red;">ERROR: {{ error }}</p>
 {% endif %}
 
 {% if books %}
@@ -48,7 +48,7 @@
     </div>
 </div>
 {% else %}
-<p>ไม่มีข้อมูลในฐานข้อมูล</p>
+<p>No Data</p>
 {% endif %}
 
 {% endblock %}

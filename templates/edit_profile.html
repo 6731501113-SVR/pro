@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+
+        <div class="text-center mb-3">
+            <img id="previewImg" src="{{ url_for('static', filename='images/' ~ (user.USER_IMAGE or 'profile.jpg')) }}"
+                style="width:150px; height:150px; border-radius:50%; object-fit:cover;">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Upload New Profile Image</label>
+            <input type="file" class="form-control" name="profile_image" accept="image/*"
+                onchange="previewImage(event)">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" name="first_name" value="{{ user.FIRST_NAME }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" name="last_name" value="{{ user.LAST_NAME }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="gmail" value="{{ user.GMAIL }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Birthday</label>
+            <input type="date" class="form-control" name="birthday" value="{{ user.BIRTHDAY }}">
+        </div>
+
+        <hr>
+
+        <h5>Change Password</h5>
+
+        <div class="mb-3">
+            <label class="form-label">Old Password</label>
+            <input type="password" class="form-control" name="old_password">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input type="password" class="form-control" name="new_password">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" name="confirm_password">
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/" class="btn btn-secondary">Cancel</a>
+        <div style="padding-bottom: 10%;"></div>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        var output = document.getElementById('previewImg');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src)
+        }
+    }
+</script>
+{% endblock %}

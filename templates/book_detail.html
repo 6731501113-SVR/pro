@@ -7,7 +7,7 @@
         padding: 30px;
         background-color: #fff;
         border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         font-family: "Prompt", sans-serif;
     }
 
@@ -106,7 +106,6 @@
         background-color: #3b82f6;
         color: white;
     }
-
 </style>
 
 <div class="book-detail">
@@ -118,20 +117,20 @@
     <div class="book-info">
         <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
         <div class="book-meta">
-            <p><strong>ผู้แต่ง:</strong> {{ book.WRITER }}</p>
-            <p><strong>สำนักพิมพ์:</strong> {{ book.PUBLISHER }}</p>
-            <p><strong>หมวดหมู่:</strong> {{ book.CATEGORIES }}</p>
+            <p><strong>Author:</strong> {{ book.WRITER }}</p>
+            <p><strong>Publisher:</strong> {{ book.PUBLISHER }}</p>
+            <p><strong>Categories:</strong> {{ book.CATEGORIES }}</p>
             <p><strong>ISBN:</strong> {{ book.ISBN }}</p>
-            <p><strong>จำนวนหน้า:</strong> {{ book.PAGES }}</p>
-            <p><strong>พิมพ์ครั้งที่:</strong> {{ book.EDITION }}</p>
-            <p><strong>วันที่ออก:</strong> {{ book.BOOKDATE }}</p>
+            <p><strong>Pages:</strong> {{ book.PAGES }}</p>
+            <p><strong>Edition:</strong> {{ book.EDITION }}</p>
+            <p><strong>Publish Date:</strong> {{ book.BOOKDATE }}</p>
         </div>
     </div>
 
     <div class="divider"></div>
 
     <div class="description">
-        <p><strong>คำอธิบาย:</strong></p>
+        <p><strong>Description:</strong></p>
         <p>{{ book.DESCRIPTION }}</p>
     </div>
 
@@ -140,8 +139,10 @@
     </div>
 
     <div class="buttons">
-        <button class="btn btn-outline">ทดลองอ่าน</button>
-        <button class="btn btn-primary">ยืมหนังสือ</button>
+        <button class="btn btn-outline">Preview</button>
+        <a href="{{ url_for('add_to_cart', book_id=book.BOOKID) }}" class="btn btn-primary">
+            🛒 add to cart
+        </a>
     </div>
 </div>
 {% endblock %}

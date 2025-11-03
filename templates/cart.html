@@ -1,29 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container mt-4">
-  <h2>🛒 ตะกร้าหนังสือของคุณ</h2>
+  <h2>🛒 Your C A R T</h2>
   {% if books %}
   <table class="table table-bordered mt-3">
     <thead class="table-dark">
       <tr>
-        <th>ภาพหนังสือ</th>
-        <th>ชื่อหนังสือ</th>
-        <th>ผู้แต่ง</th>
+        <th>Book</th>
+        <th>Name</th>
+        <th>ISBN</th>
+        <th>Price</th>
+        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
       {% for book in books %}
       <tr>
-        <td><img src="{{ book.BOOKIMAGE }}" width="80"></td>
+        <td><img src="{{ book.BOOKIMAGE }}" width="100"></td>
         <td>{{ book.BOOKNAME }}</td>
-        <td>{{ book.WRITER }}</td>
+        <td>{{ book.ISBN }}</td>
+        <td>10</td>
+        <td>
+          <a href="{{ url_for('remove_from_cart', book_id=book.BOOKID) }}" class="btn btn-danger btn-sm">
+            delete
+          </a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="{{ url_for('checkout') }}" class="btn btn-success">ไปหน้าชำระเงิน</a>
+  <a href="{{ url_for('checkout') }}" class="btn btn-success">Checkout</a>
   {% else %}
-  <p>🛍️ ยังไม่มีหนังสือในตะกร้า</p>
+  <p>🛍️ No book here</p>
   {% endif %}
 </div>
 {% endblock %}

@@ -8,6 +8,7 @@
   <title>Book Rental</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
     integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
     crossorigin="anonymous"></script>
@@ -37,7 +38,10 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/book">Book</a>
-          </li>
+          </li>/
+          <li class="nav-item">
+            <a class="nav-link" href="/my_book">My Book</a>
+          </li>/
         </ul>
 
         <!-- เมนูฝั่งขวา -->
@@ -51,8 +55,22 @@
               alt="profile" style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;">
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link position-relative" href="{{ url_for('cart') }}">
+              <i class="bi bi-cart-fill" style="font-size: 1.5rem;"></i>
+              {% set cart_count = session.get('cart', [])|length %}
+              {% if cart_count > 0 %}
+              <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                {{ cart_count }}
+              </span>
+              {% endif %}
+            </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/edit_profile">Edit Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>          
         </ul>
         {% else %}
         <ul class="navbar-nav ms-auto d-flex align-items-center">
@@ -126,6 +144,12 @@
       min-height: 100vh;
 
     }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 5px 8px;
+    }
+
   </style>
 </body>
 
