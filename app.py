@@ -45,6 +45,33 @@ def index():
         if conn:
             conn.close()
 
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('q', '').strip()
+    results = []
+
+    if query:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            sql = """
+                SELECT * FROM book
+                WHERE BOOKNAME LIKE %s OR WRITER LIKE %s OR CATEGORIES LIKE %s
+            """
+            like_query = f"%{query}%"
+            cursor.execute(sql, (like_query, like_query, like_query))
+            results = cursor.fetchall()
+        except Exception as e:
+            flash(f"❌ error: {e}", "danger")
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    return render_template("search_result.html", query=query, results=results)
+
+
 @app.route('/home2')
 def home2():
     conn = None

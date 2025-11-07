@@ -44,6 +44,14 @@
           </li>/
         </ul>
 
+        <!-- Search -->
+        <form class="d-flex ms-auto me-auto" role="search" action="{{ url_for('search') }}" method="get"
+          style="max-width: 400px;">
+          <input class="form-control me-2" type="search" name="q" placeholder="Search book..." aria-label="Search"
+            required>
+          <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+
         <!-- เมนูฝั่งขวา -->
         {% if session.get('user_name') %}
         <ul class="navbar-nav ms-auto d-flex align-items-center">
@@ -70,7 +78,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
-          </li>          
+          </li>
         </ul>
         {% else %}
         <ul class="navbar-nav ms-auto d-flex align-items-center">
@@ -149,7 +157,6 @@
       font-size: 0.7rem;
       padding: 5px 8px;
     }
-
   </style>
 </body>
 

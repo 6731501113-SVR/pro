@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>🔍 ผลการค้นหา: "{{ query }}"</h2>
+
+  {% if results %}
+  <div class="row mt-3">
+    {% for book in results %}
+    <div class="col-md-3">
+      <div class="card mb-3 shadow-sm">
+        <img src="{{ book.BOOKIMAGE }}" class="card-img-top" alt="{{ book.BOOKNAME }}">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ book.BOOKNAME }}</h5>
+          <p class="card-text text-muted">{{ book.WRITER }}</p>
+          <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm">
+            ดูรายละเอียด
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-warning mt-3">ไม่พบผลการค้นหาสำหรับ "{{ query }}"</div>
+  {% endif %}
+</div>
+{% endblock %}
