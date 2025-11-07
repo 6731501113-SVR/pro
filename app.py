@@ -213,7 +213,7 @@ def edit_profile():
         try:
             #อัปเดตข้อมูลทั่วไปก่อน
             cursor.execute("""
-                UPDATE users SET FIRST_NAME=%s, LAST_NAME=%s, GMAIL=%s, BIRTHDAY=%s, USER_IMAGE=%s
+                UPDATE users SET FIRST_NAME=%s, LAST_NAME=%s, GMAIL=%s, BIRTHDAY=%s, USER_IMG=%s
                 WHERE USER_ID=%s
             """, (first_name, last_name, gmail, birthday, filename, user_id))
             conn.commit()

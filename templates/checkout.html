@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container mt-4">
-  <h2>📚 ยืนยันการยืมหนังสือ</h2>
+  <h2>📚 Confirm checkout</h2>
 
   {% if books %}
   <div class="table-responsive mt-3">
     <table class="table table-striped">
       <thead class="table-dark">
         <tr>
-          <th>ปกหนังสือ</th>
-          <th>ชื่อหนังสือ</th>
-          <th>ผู้แต่ง</th>
-          <th>ค่าธรรมเนียม</th>
+          <th>IMG</th>
+          <th>Name</th>
+          <th>Author</th>
+          <th>Fee</th>
         </tr>
       </thead>
       <tbody>
@@ -28,20 +28,20 @@
   </div>
 
   <div class="alert alert-info text-center fs-5">
-    💰 ค่าธรรมเนียมทั้งหมด: <strong>฿{{ total_fee }}</strong>
+    💰 Total fee: <strong>฿{{ total_fee }}</strong>
   </div>
 
   <form method="POST" class="text-center mt-3">
     <button type="submit" class="btn btn-primary btn-lg">
-      ✅ ยืนยันการยืมและชำระเงิน
+      ✅ Confirm borrowing
     </button>
     <a href="{{ url_for('cart') }}" class="btn btn-secondary btn-lg">
-      🔙 กลับไปแก้ไขตะกร้า
+      🔙 edit cart
     </a>
   </form>
 
   {% else %}
-  <p>ไม่มีหนังสือในตะกร้า</p>
+  <p>no book here</p>
   {% endif %}
 </div>
 {% endblock %}
