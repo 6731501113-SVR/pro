@@ -447,6 +447,37 @@ def my_books():
             conn.close()
     return render_template('my_book.html', books=books)
 
+@app.route('/read/<int:book_id>')
+def read_book(book_id):
+    # ต้องล็อกอินก่อนถึงจะอ่านได้
+    if 'user_id' not in session:
+        flash("⚠️ Please log in first ⚠️", "warning")
+        return redirect(url_for('login'))
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # ดึงข้อมูลหนังสือเล่มนั้น
+        cursor.execute("SELECT * FROM book WHERE BOOKID = %s", (book_id,))
+        book = cursor.fetchone()
+
+        if not book:
+            flash("❌ not found this book", "danger")
+            return redirect(url_for('my_books'))
+
+    except Exception as e:
+        flash(f"❌ Error: {e}", "danger")
+        return redirect(url_for('my_books'))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template("read.html", book=book)
+
+
 @app.route('/return_book/<int:book_id>', methods=['POST'])
 def return_book(book_id):
     if 'user_id' not in session:

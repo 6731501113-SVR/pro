@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2>📖 Read: {{ book.BOOKNAME }}</h2>
+
+  <div class="mt-4 p-4 bg-white shadow rounded" style="min-height: 400px;">
+    <h4>BOOK</h4>
+    <p class="text-muted">*DEVELOPMENT*</p>
+
+    <hr>
+
+    <p style="font-size: 72px;">
+      📌 UNDER DEVELOPMENT
+    </p>
+  </div>
+
+  <a href="{{ url_for('my_books') }}" class="btn btn-secondary mt-3">⬅ Return MY BOOK</a>
+</div>
+
+{% endblock %}

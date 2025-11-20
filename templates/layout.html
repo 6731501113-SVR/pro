@@ -56,7 +56,7 @@
         {% if session.get('user_name') %}
         <ul class="navbar-nav ms-auto d-flex align-items-center">
           <li class="nav-item me-2 text-light">
-            Welcome, {{ session['user_name'] }}!
+            {{ session['user_name'] }}
           </li>
           <li class="nav-item">
             <img src="{{ url_for('static', filename='images/' ~ (session['user_profile'] | default('profile.jpg'))) }}"
@@ -146,7 +146,7 @@
       font-family: 'Times New Roman', Times, serif;
       margin: 0;
       padding: 0;
-      background-color: #ffd08a;
+      background-color: #ffffff;
       align-items: center;
       justify-content: center;
       min-height: 100vh;

@@ -1,29 +1,67 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<style>
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .book-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform .2s;
+  }
+
+  .book-card:hover {
+    transform: scale(1.03);
+  }
+
+  .book-card img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .return-btn {
+    margin-top: 10px;
+  }
+</style>
+
 <div class="container mt-4">
   <h2>📚 MY BOOK</h2>
-  {% if books %}
-  <div class="row mt-3">
-    {% for book in books %}
-    <div class="col-md-3">
-      <div class="card mb-3 shadow-sm">
-        <img src="{{ book.BOOKIMAGE }}" class="card-img-top" alt="{{ book.BOOKNAME }}">
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ book.BOOKNAME }}</h5>
-          <p class="card-text text-muted">{{ book.WRITER }}</p>
-          <p class="card-text"><small class="text-secondary">📅 {{ book.ORDER_DATE }}</small></p>
 
-          <!-- ปุ่มคืนหนังสือ -->
-          <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
-            <button type="submit" class="btn btn-danger btn-sm w-100">
-              🔁 Return
-            </button>
-          </form>
-        </div>
-      </div>
+  {% if books %}
+  <div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+      <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+
+      <h5 class="mt-2">{{ book.BOOKNAME }}</h5>
+      <p class="text-muted">{{ book.WRITER }}</p>
+      <p class="text-secondary"><small>📅 {{ book.ORDER_DATE }}</small></p>
+
+      <!-- ปุ่ม Read -->
+      <a href="{{ url_for('read_book', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm w-100 mb-2">
+        📖 Read
+      </a>
+      <!-- ปุ่มคืนหนังสือ -->
+      <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
+        <button type="submit" class="btn btn-danger btn-sm w-100 return-btn">
+          🔁 Return
+        </button>
+      </form>
     </div>
     {% endfor %}
   </div>
+
   {% else %}
   <p>No book here</p>
   {% endif %}
