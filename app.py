@@ -4,7 +4,7 @@ from mysql.connector import Error
 from dbprofile import host, user, password
 import os
 from werkzeug.utils import secure_filename
-from datetime import date, datetime
+from datetime import date
 
 
 #Database Connection Setup
