@@ -1,27 +1,75 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<style>
+  .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+  }
+
+  .book-card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transition: transform .2s, box-shadow .2s;
+      background: #fff;
+      text-align: center;
+      padding-bottom: 15px;
+  }
+
+  .book-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
+
+  .book-card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+  }
+
+  .book-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 10px;
+      text-decoration: none;
+      color: black;
+      display: block;
+  }
+
+  .book-title:hover {
+      color: #007bff;
+  }
+</style>
+
 <div class="container mt-4">
-  <h2>🔍 ผลการค้นหา: "{{ query }}"</h2>
+  <h2>🔍 Search: "{{ query }}"</h2>
 
   {% if results %}
-  <div class="row mt-3">
+  <div class="book-grid mt-3">
     {% for book in results %}
-    <div class="col-md-3">
-      <div class="card mb-3 shadow-sm">
-        <img src="{{ book.BOOKIMAGE }}" class="card-img-top" alt="{{ book.BOOKNAME }}">
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ book.BOOKNAME }}</h5>
-          <p class="card-text text-muted">{{ book.WRITER }}</p>
-          <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm">
-            ดูรายละเอียด
-          </a>
-        </div>
-      </div>
+    <div class="book-card">
+      <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+
+      <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="book-title">
+        {{ book.BOOKNAME }}
+      </a>
+
+      <p class="text-muted">{{ book.WRITER }}</p>
+
+      <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm mt-2">
+        Detail
+      </a>
     </div>
     {% endfor %}
   </div>
+
   {% else %}
-  <div class="alert alert-warning mt-3">ไม่พบผลการค้นหาสำหรับ "{{ query }}"</div>
+  <div class="alert alert-warning mt-3">
+    Notfound "{{ query }}"
+  </div>
   {% endif %}
 </div>
+
 {% endblock %}
