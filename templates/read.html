@@ -1,21 +1,34 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="container mt-4">
-  <h2>📖 Read: {{ book.BOOKNAME }}</h2>
+<style>
+    .ebook-container {
+        max-width: 750px;
+        margin: 40px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        font-family: "Prompt", sans-serif;
+    }
+    .page img {
+        width: 100%;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        margin-bottom: 25px;
+    }
+</style>
 
-  <div class="mt-4 p-4 bg-white shadow rounded" style="min-height: 400px;">
-    <h4>BOOK</h4>
-    <p class="text-muted">*DEVELOPMENT*</p>
+<div class="ebook-container">
+    <h2>📖 {{ book.BOOKNAME }}</h2>
 
-    <hr>
-
-    <p style="font-size: 72px;">
-      📌 UNDER DEVELOPMENT
-    </p>
-  </div>
-
-  <a href="{{ url_for('my_books') }}" class="btn btn-secondary mt-3">⬅ Return MY BOOK</a>
+    {% for img in images %}
+        <div class="page">
+            <img src="{{ img }}" alt="page {{ loop.index }}">
+        </div>
+    {% endfor %}
 </div>
+
+<a href="{{ url_for('my_books') }}" class="btn btn-secondary mt-3">⬅ Return MY BOOK</a>
 
 {% endblock %}

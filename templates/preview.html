@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    .ebook-container {
+        max-width: 750px;
+        margin: 40px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        font-family: "Prompt", sans-serif;
+    }
+
+    .page img {
+        width: 100%;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        margin-bottom: 25px;
+    }
+
+    .end-box {
+        margin-top: 40px;
+        padding: 30px;
+        text-align: center;
+        border-radius: 15px;
+        background: #f7f7f7;
+        border: 2px dashed #ccc;
+    }
+
+    .end-box h3 {
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        color: #444;
+    }
+
+    .btn-add {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+        border: none;
+        background: #3b82f6;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn-add:hover {
+        background: #2563eb;
+    }
+</style>
+
+<div class="ebook-container">
+    <h2></h2>
+
+    {% for img in images %}
+        <div class="page">
+            <img src="{{ img }}" alt="preview page {{ loop.index }}">
+        </div>
+    {% endfor %}
+
+    <!-- หน้าพิเศษท้ายสุด -->
+    <div class="end-box">
+        <h3>‼️ END FREE CONTENT ‼️</h3>
+
+        <a href="{{ url_for('add_to_cart', book_id=book_id) }}">
+            <button class="btn-add">🛒 add to cart</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

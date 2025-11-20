@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>✏️ Write Review</h2>
+
+    <form method="POST">
+
+        <!-- ⭐ Star Rating -->
+        <label class="mt-3">Score</label><br>
+
+        <div class="star-rating">
+            <span data-value="1">★</span>
+            <span data-value="2">★</span>
+            <span data-value="3">★</span>
+            <span data-value="4">★</span>
+            <span data-value="5">★</span>
+        </div>
+        <input type="hidden" name="score" id="score-input" required>
+
+        <label class="mt-3">Your Review</label>
+        <textarea name="review" class="form-control" rows="5" required></textarea>
+
+        <button class="btn btn-primary mt-3">Submit</button>
+    </form>
+
+    <a href="{{ url_for('my_books') }}" class="btn btn-secondary mt-3">⬅ Back</a>
+</div>
+
+<style>
+    .star-rating {
+        display: flex;
+        font-size: 35px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .star-rating span {
+        color: #ccc;
+        transition: color 0.2s;
+        padding: 0 3px;
+    }
+
+    .star-rating span.selected {
+        color: gold;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const stars = document.querySelectorAll('.star-rating span');
+        const scoreInput = document.getElementById('score-input');
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-value'));
+                scoreInput.value = rating;
+
+                // ล้างค่าทุกดวงก่อน
+                stars.forEach(s => s.classList.remove('selected'));
+
+                // Highlight ดาวตั้งแต่ 1 → คะแนนที่เลือก
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= rating)
+                        s.classList.add('selected');
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

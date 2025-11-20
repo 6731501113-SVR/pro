@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+  .profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+  }
+
+  .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ddd;
+      margin-bottom: 20px;
+  }
+
+  .profile-info p {
+      font-size: 1.1rem;
+      margin: 5px 0;
+      color: #444;
+  }
+
+  .btn-edit {
+      margin-top: 20px;
+  }
+</style>
+
+<div class="profile-container">
+    <img
+                src="{{ url_for('static', filename='images/' + (session.get('user_profile') or 'profile.jpg')) }}"
+                alt="profile" style="width:200px; height:200px;border: 3px solid rgb(0, 0, 0); border-radius:50%; object-fit:cover; margin-right:10px;">
+
+    <h2>{{ user.FIRST_NAME }} {{ user.LAST_NAME }}</h2>
+
+    <div class="profile-info text-start mt-4">
+        <p><strong>Email:</strong> {{ user.GMAIL }}</p>
+        <p><strong>Birthday:</strong> {{ user.BIRTHDAY }}</p>
+        <p><strong>UID:</strong> {{ user.USER_ID }}</p>
+    </div>
+
+    <!-- ปุ่มไปหน้า Edit Profile -->
+    <a href="/edit_profile" class="btn btn-primary btn-edit w-100">
+        ✏️ Edit Profile
+    </a>
+</div>
+
+{% endblock %}

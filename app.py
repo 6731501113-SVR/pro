@@ -4,6 +4,8 @@ from mysql.connector import Error
 from dbprofile import host, user, password
 import os
 from werkzeug.utils import secure_filename
+from datetime import date, datetime
+
 
 #Database Connection Setup
 app = Flask(__name__)
@@ -155,7 +157,6 @@ def book():
         if conn:
             conn.close()
 
-
 @app.route('/Licence')
 def licence():
     return render_template('licence.html')
@@ -167,18 +168,40 @@ def book_detail(book_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+
+        # ดึงข้อมูลหนังสือ
         cursor.execute("SELECT * FROM book WHERE BOOKID = %s", (book_id,))
         book = cursor.fetchone()
+
+        # ดึงคะแนนเฉลี่ย
+        cursor.execute("""
+            SELECT AVG(SCORE) AS avg_score, COUNT(*) AS total_review
+            FROM review
+            WHERE BOOKID = %s
+        """, (book_id,))
+        rating = cursor.fetchone()
+
+        # ดึงรีวิวทั้งหมด
+        cursor.execute("""
+            SELECT SCORE, REVIEW
+            FROM review
+            WHERE BOOKID = %s
+            ORDER BY SCORE DESC
+        """, (book_id,))
+        reviews = cursor.fetchall()
+
+
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        cursor.close()
+        conn.close()
 
-    if not book:
-        return "Book not found", 404
+    return render_template(
+        'book_detail.html', 
+        book=book,
+        rating=rating,
+        reviews=reviews
+    )
 
-    return render_template('book_detail.html', book=book)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -207,7 +230,43 @@ def register():
             if conn:
                 conn.close()
 
-    return render_template('register.html')
+    return render_template('register.html', date=date)
+
+@app.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        flash("⚠️ Please log in first ⚠️", "warning")
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM users
+            WHERE USER_ID = %s
+        """, (user_id,))
+        
+        user = cursor.fetchone()
+
+        if not user:
+            flash("‼️ No user ‼️", "danger")
+            return redirect(url_for('index'))
+
+    except Exception as e:
+        flash(f"❌ Error: {e}", "danger")
+        return redirect(url_for('index'))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return render_template("profile.html", user=user)
+
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -350,7 +409,6 @@ def add_to_cart(book_id):
 
     return redirect(url_for('book_detail', book_id=book_id))
 
-
 @app.route('/remove_from_cart/<int:book_id>')
 def remove_from_cart(book_id):
     cart = session.get('cart', [])
@@ -447,6 +505,31 @@ def my_books():
             conn.close()
     return render_template('my_book.html', books=books)
 
+@app.route('/preview/<int:book_id>')
+def preview_book(book_id):
+    
+    folder_path = f"static/ebooks/{book_id}/"
+
+    try:
+        # ดึงรูปทั้งหมดในโฟลเดอร์
+        images = []
+
+        for file in sorted(os.listdir(folder_path))[:10]:
+            if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                images.append(f"/{folder_path}{file}")
+
+        if len(images) == 0:
+            flash("❌ No preview pages found.", "danger")
+            return redirect(url_for('book_detail', book_id=book_id))
+
+    except:
+        flash("❌ Preview folder not found", "danger")
+        return redirect(url_for('book_detail', book_id=book_id))
+
+    return render_template("preview.html", book_id=book_id, images=images)
+
+
+
 @app.route('/read/<int:book_id>')
 def read_book(book_id):
     # ต้องล็อกอินก่อนถึงจะอ่านได้
@@ -458,7 +541,6 @@ def read_book(book_id):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # ดึงข้อมูลหนังสือเล่มนั้น
         cursor.execute("SELECT * FROM book WHERE BOOKID = %s", (book_id,))
         book = cursor.fetchone()
 
@@ -466,16 +548,60 @@ def read_book(book_id):
             flash("❌ not found this book", "danger")
             return redirect(url_for('my_books'))
 
-    except Exception as e:
-        flash(f"❌ Error: {e}", "danger")
-        return redirect(url_for('my_books'))
     finally:
-        if cursor:
+        cursor.close()
+        conn.close()
+
+    # โหลดรูปทุกหน้าในโฟลเดอร์
+    folder_path = f"static/ebooks/{book_id}/"
+    images = []
+
+    try:
+        for file in sorted(os.listdir(folder_path)):
+            if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                images.append(f"/{folder_path}{file}")
+
+        if len(images) == 0:
+            flash("❌ No pages found.", "danger")
+            return redirect(url_for('my_books'))
+
+    except:
+        flash("❌ ebook folder not found", "danger")
+        return redirect(url_for('my_books'))
+
+    return render_template("read.html", book=book, images=images)
+
+@app.route('/review/write/<int:book_id>', methods=['GET', 'POST'])
+def write_review(book_id):
+    if 'user_id' not in session:
+        flash("⚠️ Please log in first ⚠️", "warning")
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        score = request.form.get('score')
+        review_text = request.form.get('review')
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO review (BOOKID, SCORE, REVIEW)
+                VALUES (%s, %s, %s)
+            """, (book_id, score, review_text))
+            conn.commit()
+
+            flash("✅ Review submitted!", "success")
+            return redirect(url_for('book_detail', book_id=book_id))
+
+        except Exception as e:
+            flash(f"❌ Error: {e}", "danger")
+
+        finally:
             cursor.close()
-        if conn:
             conn.close()
 
-    return render_template("read.html", book=book)
+    return render_template("write_review.html", book_id=book_id)
 
 
 @app.route('/return_book/<int:book_id>', methods=['POST'])

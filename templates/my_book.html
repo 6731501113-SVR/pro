@@ -52,6 +52,10 @@
       <a href="{{ url_for('read_book', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm w-100 mb-2">
         📖 Read
       </a>
+      <!-- ปุ่มเขียนรีวิว -->
+      <a href="{{ url_for('write_review', book_id=book.BOOKID) }}" class="btn btn-warning btn-sm w-100 mt-2">
+        ✏️ Write Review
+      </a>
       <!-- ปุ่มคืนหนังสือ -->
       <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
         <button type="submit" class="btn btn-danger btn-sm w-100 return-btn">

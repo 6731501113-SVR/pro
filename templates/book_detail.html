@@ -71,6 +71,17 @@
         color: #444;
     }
 
+    .accordion-box {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .accordion-box.open {
+        opacity: 1;
+    }
+
     .buttons {
         display: flex;
         justify-content: space-around;
@@ -135,11 +146,76 @@
     </div>
 
     <div class="review-section">
-        <p><strong>Review:</strong> ★★★★★ <span class="review-score">5/5</span></p>
+        <h4><strong>Reviews:</strong></h4>
+
+        {% if rating.total_review > 0 %}
+        <p>
+            ⭐ <strong>{{ "%.1f"|format(rating.avg_score) }}/5</strong>
+            ({{ rating.total_review }} reviews)
+        </p>
+        {% else %}
+        <p>No reviews yet.</p>
+        {% endif %}
+
+        <hr>
+
+        {% if reviews %}
+        <!-- ⭐ รีวิวคะแนนสูงสุด -->
+        <div class="top-review">
+            <p>
+                <strong>⭐ {{ reviews[0].SCORE }}</strong><br>
+                {{ reviews[0].REVIEW }}
+            </p>
+        </div>
+
+        {% if reviews|length > 1 %}
+        <!-- ปุ่ม Toggle -->
+        <button id="toggle-btn" class="btn btn-secondary mt-2" onclick="toggleMoreReviews()">
+            Show more reviews ▼
+        </button>
+
+        <!-- 🎛️ รีวิวที่เหลือ พร้อม Accordion -->
+        <div id="more-reviews" class="accordion-box">
+            {% for r in reviews[1:] %}
+            <div class="accordion-item">
+                <p>
+                    ⭐ {{ r.SCORE }}<br>
+                    {{ r.REVIEW }}
+                </p>
+                <hr>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endif %}
     </div>
 
+
+    <script>
+        function toggleMoreReviews() {
+            const box = document.getElementById("more-reviews");
+            const btn = document.getElementById("toggle-btn");
+
+            if (box.classList.contains("open")) {
+                // ปิด
+                box.style.maxHeight = "0px";
+                box.classList.remove("open");
+                btn.innerHTML = "Show more reviews ▼";
+            } else {
+                // เปิด (scrollHeight ใช้คำนวณความสูงจริง)
+                box.classList.add("open");
+                box.style.maxHeight = box.scrollHeight + "px";
+                btn.innerHTML = "Show less ▲";
+            }
+        }
+    </script>
+
+
+
     <div class="buttons">
-        <button class="btn btn-outline">Preview</button>
+        <a href="{{ url_for('preview_book', book_id=book.BOOKID) }}" class="btn btn-outline">
+            PREVIEW
+        </a>
         <a href="{{ url_for('add_to_cart', book_id=book.BOOKID) }}" class="btn btn-primary">
             🛒 add to cart
         </a>
