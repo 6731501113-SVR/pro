@@ -58,7 +58,7 @@ def search():
             cursor = conn.cursor(dictionary=True)
             sql = """
                 SELECT * FROM book
-                WHERE BOOKNAME LIKE %s OR WRITER LIKE %s OR CATEGORIES LIKE %s
+                WHERE BOOKNAME LIKE %s OR WRITER LIKE %s
             """
             like_query = f"%{query}%"
             cursor.execute(sql, (like_query, like_query, like_query))
