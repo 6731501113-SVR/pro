@@ -16,6 +16,11 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform .2s;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;   /* ดันปุ่มไปล่าง */
+    height: 520px;                    /* ตั้งความสูงเท่ากันทุกใบ */
   }
 
   .book-card:hover {
@@ -24,14 +29,20 @@
 
   .book-card img {
     width: 150px;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin: 0 auto 10px auto;
   }
 
-  .return-btn {
-    margin-top: 10px;
+  /* ส่วนเนื้อหา */
+  .book-info {
+    flex-grow: 1;
+  }
+
+  /* กลุ่มปุ่ม */
+  .button-group {
+    margin-top: auto;
   }
 </style>
 
@@ -42,26 +53,32 @@
   <div class="book-grid">
     {% for book in books %}
     <div class="book-card">
-      <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
 
-      <h5 class="mt-2">{{ book.BOOKNAME }}</h5>
-      <p class="text-muted">{{ book.WRITER }}</p>
-      <p class="text-secondary"><small>📅 {{ book.ORDER_DATE }}</small></p>
+      <!-- เนื้อหาด้านบน -->
+      <div class="book-info">
+        <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+        <h5 class="mt-2">{{ book.BOOKNAME }}</h5>
+        <p class="text-muted">{{ book.WRITER }}</p>
+        <p class="text-secondary"><small>📅 {{ book.ORDER_DATE }}</small></p>
+      </div>
 
-      <!-- ปุ่ม Read -->
-      <a href="{{ url_for('read_book', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm w-100 mb-2">
-        📖 Read
-      </a>
-      <!-- ปุ่มเขียนรีวิว -->
-      <a href="{{ url_for('write_review', book_id=book.BOOKID) }}" class="btn btn-warning btn-sm w-100 mt-2">
-        ✏️ Write Review
-      </a>
-      <!-- ปุ่มคืนหนังสือ -->
-      <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
-        <button type="submit" class="btn btn-danger btn-sm w-100 return-btn">
-          🔁 Return
-        </button>
-      </form>
+      <!-- ปุ่มทั้งหมด -->
+      <div class="button-group">
+        <a href="{{ url_for('read_book', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm w-100 mb-2">
+          📖 Read
+        </a>
+
+        <a href="{{ url_for('write_review', book_id=book.BOOKID) }}" class="btn btn-warning btn-sm w-100 mb-2">
+          ✏️ Write Review
+        </a>
+
+        <form action="{{ url_for('return_book', book_id=book.BOOKID) }}" method="POST">
+          <button type="submit" class="btn btn-danger btn-sm w-100">
+            🔁 Return
+          </button>
+        </form>
+      </div>
+
     </div>
     {% endfor %}
   </div>
