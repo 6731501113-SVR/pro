@@ -63,7 +63,7 @@
         flex-direction: column;
     }
 
-    .book-card a{
+    .book-card a {
         color: #000000;
     }
 
@@ -124,7 +124,7 @@
         <div class="book-card ">
             <a class="text-decoration-none" href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
                 <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
-                <div >{{ book.BOOKNAME }}</div>
+                <div>{{ book.BOOKNAME }}</div>
             </a>
         </div>
         {% endfor %}
@@ -132,9 +132,15 @@
 
     <div class="section-title">Top Rentals</div>
     <div class="book-grid">
-        <div class="book-card">Book A</div>
-        <div class="book-card">Book B</div>
-        <div class="book-card">Book C</div>
+        {% for book in books[::-1][:5] %}
+        <div class="book-card">
+            <a class="text-decoration-none" href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
+                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                <div>{{ book.BOOKNAME }}</div>
+            </a>
+        </div>
+        {% endfor %}
+
     </div>
 </div>
 

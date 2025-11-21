@@ -21,7 +21,7 @@ def get_db_connection():
         password=password,
         database="book"
     )
-#ตรวจสอบไฟล์
+#File check
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -39,7 +39,7 @@ def index():
 
 
     except Exception as e:
-        print(f"❌ Error fetching books: {e}")
+        print(f"❌ Error fetching books: {e} ❌")
         return render_template("index.html", books=[], error=str(e))
     finally:
         if cursor:
@@ -64,7 +64,7 @@ def search():
             cursor.execute(sql, (like_query, like_query, like_query))
             results = cursor.fetchall()
         except Exception as e:
-            flash(f"❌ error: {e}", "danger")
+            flash(f"❌ error: {e} ❌", "danger")
         finally:
             if cursor:
                 cursor.close()
@@ -87,7 +87,7 @@ def home2():
 
 
     except Exception as e:
-        print(f"❌ Error fetching books: {e}")
+        print(f"❌ Error fetching books: {e} ❌")
         return render_template("home2.html", books=[], error=str(e))
     finally:
         if cursor:
@@ -110,18 +110,18 @@ def login():
             user = cursor.fetchone()
 
             if user:
-                #เก็บ session ของผู้ใช้
+                #store user session
                 session['user_id'] = user['USER_ID']
                 session['user_name'] = user['FIRST_NAME']
                 session['user_profile'] = user.get('USER_IMG', 'profile.jpg')
 
-                flash(f"‼️ Welcome {user['FIRST_NAME']} ‼️", "success")
+                flash(f"😎 Welcome {user['FIRST_NAME']} 😎", "success")
                 return redirect('/')
             else:
                 flash("‼️ Invalid email or password ‼️", "danger")
 
         except Error as e:
-            flash(f"‼️ Database error: {e} ‼️", "danger")
+            flash(f"❌ Database error: {e} ❌", "danger")
         finally:
             if cursor:
                 cursor.close()
@@ -146,10 +146,10 @@ def book():
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM book")
         books = cursor.fetchall()
-        print("✅ BOOK data fetched:", books)  # ดูใน console
+        print("✅ BOOK data fetched: ", books, " ✅")  # look console
         return render_template("book.html", books=books)
     except Exception as e:
-        print(f"❌ Database error: {e}")
+        print(f"❌ Database error: {e} ❌")
         return render_template("book.html", books=[], error=str(e))
     finally:
         if cursor:
@@ -169,11 +169,11 @@ def book_detail(book_id):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # ดึงข้อมูลหนังสือ
+        # got book detail
         cursor.execute("SELECT * FROM book WHERE BOOKID = %s", (book_id,))
         book = cursor.fetchone()
 
-        # ดึงคะแนนเฉลี่ย
+        # got book score
         cursor.execute("""
             SELECT AVG(SCORE) AS avg_score, COUNT(*) AS total_review
             FROM review
@@ -181,7 +181,7 @@ def book_detail(book_id):
         """, (book_id,))
         rating = cursor.fetchone()
 
-        # ดึงรีวิวทั้งหมด
+        # got book review
         cursor.execute("""
             SELECT SCORE, REVIEW
             FROM review
@@ -216,26 +216,26 @@ def register():
             conn = get_db_connection()
             cursor = conn.cursor(dictionary=True, buffered=True)
 
-            # ⭐ ตรวจสอบว่าอีเมลมีอยู่แล้วหรือยัง
+            # check gmail already exist
             cursor.execute("SELECT GMAIL FROM users WHERE GMAIL = %s", (gmail,))
             existing = cursor.fetchone()
 
             if existing:
-                flash("❌ Email already exists, please use another email.", "danger")
+                flash("❌ Email already exists, please use another email. ❌", "danger")
                 return redirect(url_for('register'))
 
-            # ไม่มีซ้ำ → INSERT
+            # if not exist → INSERT
             cursor.execute("""
                 INSERT INTO users (FIRST_NAME, LAST_NAME, GMAIL, USER_PASSWORD, BIRTHDAY)
                 VALUES (%s, %s, %s, %s, %s)
             """, (first_name, last_name, gmail, password, birthday))
             
             conn.commit()
-            flash("✅ Register successful!", "success")
+            flash("✅ Register successful! ✅", "success")
             return redirect(url_for('login'))
 
         except Error as e:
-            flash(f"‼️ Database error: {e}", "danger")
+            flash(f"❌ Database error: {e} ❌", "danger")
 
         finally:
             if cursor:
@@ -270,7 +270,7 @@ def profile():
             return redirect(url_for('index'))
 
     except Exception as e:
-        flash(f"❌ Error: {e}", "danger")
+        flash(f"❌ Error: {e} ❌", "danger")
         return redirect(url_for('index'))
     finally:
         if cursor:
@@ -310,40 +310,40 @@ def edit_profile():
             profile_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         try:
-            #อัปเดตข้อมูลทั่วไปก่อน
+            #update profile
             cursor.execute("""
                 UPDATE users SET FIRST_NAME=%s, LAST_NAME=%s, GMAIL=%s, BIRTHDAY=%s, USER_IMG=%s
                 WHERE USER_ID=%s
             """, (first_name, last_name, gmail, birthday, filename, user_id))
             conn.commit()
 
-            #เปลี่ยนรหัสผ่าน (ถ้ามี)
+            #change password (optional)
             if old_password or new_password or confirm_password:
                 cursor.execute("SELECT USER_PASSWORD FROM users WHERE USER_ID=%s", (user_id,))
                 current_pw = cursor.fetchone()['USER_PASSWORD']
 
                 if old_password != current_pw:
-                    flash("❌ Old password is incorrect!", "danger")
+                    flash("❌ Old password is incorrect! ❌", "danger")
                     return redirect(url_for('edit_profile'))
 
                 if new_password != confirm_password:
-                    flash("❌ New passwords do not match!", "danger")
+                    flash("❌ New passwords do not match! ❌", "danger")
                     return redirect(url_for('edit_profile'))
 
                 cursor.execute("""
                     UPDATE users SET USER_PASSWORD=%s WHERE USER_ID=%s
                 """, (new_password, user_id))
                 conn.commit()
-                flash("✅ Password changed successfully!", "success")
+                flash("✅ Password changed successfully! ✅", "success")
 
             session['user_name'] = first_name
             session['user_profile'] = filename
 
-            flash("✅ Profile updated successfully!", "success")
-            return redirect(url_for('edit_profile'))
+            flash("✅ Profile updated successfully! ✅", "success")
+            return redirect(url_for('profile'))
 
         except Error as e:
-            flash(f"‼️ Error: {e} ‼️", "danger")
+            flash(f"❌ Error: {e} ❌", "danger")
 
 
     cursor.execute("SELECT * FROM users WHERE USER_ID=%s", (user_id,))
@@ -356,12 +356,12 @@ def edit_profile():
 
 @app.route('/cart')
 def cart():
-    #เช็คว่า Login session อยู่รึเปล่า 
+    #Check login session
     if 'user_id' not in session:
         flash("⚠️ Please log in first ⚠️", "warning")
         return redirect(url_for('login'))
     
-    # ดึงตะกร้าจาก session (เก็บเป็น list ของ book_id)
+    # got cart from session (store as list of book_id)
     cart = session.get('cart', [])
     books = []
     if cart:
@@ -391,7 +391,7 @@ def add_to_cart(book_id):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        #ตรวจสอบว่าผู้ใช้เคยยืมหนังสือนี้ไปแล้วหรือยัง
+        #check borrowed or not
         cursor.execute("""
             SELECT * FROM `order`
             WHERE USER_ID = %s AND BOOKID = %s
@@ -399,21 +399,21 @@ def add_to_cart(book_id):
         existing_order = cursor.fetchone()
 
         if existing_order:
-            flash("⚠️ You already borrow this book", "warning")
+            flash("⚠️ You already borrow this book ⚠️", "warning")
             return redirect(url_for('book_detail', book_id=book_id))
 
-        #ตรวจสอบว่าหนังสือนี้อยู่ในตะกร้าแล้วหรือไม่
+        #check in cart or not
         if book_id in cart:
-            flash("⚠️ already in cart", "warning")
+            flash("⚠️ already in cart ⚠️", "warning")
             return redirect(url_for('book_detail', book_id=book_id))
 
-        #ถ้าไม่ซ้ำ ให้เพิ่มลงตะกร้า
+        #add to cart
         cart.append(book_id)
         session['cart'] = cart
-        flash("✅ added", "success")
+        flash("✅ added ✅", "success")
 
     except Exception as e:
-        flash(f"❌ error: {e}", "danger")
+        flash(f"❌ error ❌: {e}", "danger")
     finally:
         if cursor:
             cursor.close()
@@ -428,9 +428,9 @@ def remove_from_cart(book_id):
     if book_id in cart:
         cart.remove(book_id)
         session['cart'] = cart
-        flash("🗑️ Delete Successfully", "info")
+        flash("😱 Delete Successfully 🗑️", "info")
     else:
-        flash("🛍️ No book here", "warning")
+        flash("⚠️ No book here ⚠️", "warning")
     return redirect(url_for('cart'))
 
 
@@ -442,13 +442,13 @@ def checkout():
 
     cart = session.get('cart', [])
     if not cart:
-        flash("🛍️ No book here", "warning")
+        flash("⚠️ No book here ⚠️", "warning")
         return redirect(url_for('cart'))
 
     conn = None
     cursor = None
 
-    # ดึงข้อมูลหนังสือในตะกร้า
+    # got book list from cart
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query = "SELECT * FROM book WHERE BOOKID IN (%s)" % ','.join(['%s'] * len(cart))
@@ -457,7 +457,7 @@ def checkout():
     cursor.close()
     conn.close()
 
-    # คิดค่าธรรมเนียม 10 บาทต่อเล่ม
+    # book fee 10 bath per book
     total_fee = len(books) * 10
 
     if request.method == 'POST':
@@ -470,11 +470,11 @@ def checkout():
                     VALUES (%s, %s, CURRENT_TIMESTAMP())
                 """, (book_id, session['user_id']))
             conn.commit()
-            flash(f"✅ Borrowd! total Pay {total_fee} Bath", "success")
+            flash(f"✅ Borrowd! total Pay {total_fee} Bath ✅", "success")
             session.pop('cart', None)
             return redirect(url_for('my_books'))
         except Exception as e:
-            flash(f"❌ error: {e}", "danger")
+            flash(f"❌ error: {e} ❌", "danger")
         finally:
             if cursor:
                 cursor.close()
@@ -486,7 +486,7 @@ def checkout():
 
 @app.route('/my_book')
 def my_books():
-    #เช็คว่า Login session อยู่รึเปล่า 
+    #Check Login session
     if 'user_id' not in session:
         flash("⚠️ Please log in first ⚠️", "warning")
         return redirect(url_for('login'))
@@ -497,7 +497,7 @@ def my_books():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # ดึงข้อมูลจาก order เชื่อมกับ book
+        # got data from order and join book
         cursor.execute("""
             SELECT b.*, o.ORDER_DATE
             FROM `order` o
@@ -508,9 +508,9 @@ def my_books():
 
         books = cursor.fetchall()
     except Exception as e:
-        print(f"❌ Error fetching user books: {e}")
+        print(f"❌ Error fetching user books: {e} ❌")
         books = []
-        flash("Can not load book", "danger")
+        flash("‼️ Can not load book ‼️", "danger")
     finally:
         if cursor:
             cursor.close()
@@ -524,7 +524,7 @@ def preview_book(book_id):
     folder_path = f"static/ebooks/{book_id}/"
 
     try:
-        # ดึงรูปทั้งหมดในโฟลเดอร์
+        # got images
         images = []
 
         for file in sorted(os.listdir(folder_path))[:10]:
@@ -532,11 +532,11 @@ def preview_book(book_id):
                 images.append(f"/{folder_path}{file}")
 
         if len(images) == 0:
-            flash("❌ No preview pages found.", "danger")
+            flash("‼️ No preview pages found. ‼️", "danger")
             return redirect(url_for('book_detail', book_id=book_id))
 
     except:
-        flash("❌ Preview folder not found", "danger")
+        flash("‼️ Preview folder not found ‼️", "danger")
         return redirect(url_for('book_detail', book_id=book_id))
 
     return render_template("preview.html", book_id=book_id, images=images)
@@ -545,7 +545,7 @@ def preview_book(book_id):
 
 @app.route('/read/<int:book_id>')
 def read_book(book_id):
-    # ต้องล็อกอินก่อนถึงจะอ่านได้
+    # check login session
     if 'user_id' not in session:
         flash("⚠️ Please log in first ⚠️", "warning")
         return redirect(url_for('login'))
@@ -558,14 +558,14 @@ def read_book(book_id):
         book = cursor.fetchone()
 
         if not book:
-            flash("❌ not found this book", "danger")
+            flash("‼️ not found this boo ‼️", "danger")
             return redirect(url_for('my_books'))
 
     finally:
         cursor.close()
         conn.close()
 
-    # โหลดรูปทุกหน้าในโฟลเดอร์
+    # loading all images in folder
     folder_path = f"static/ebooks/{book_id}/"
     images = []
 
@@ -575,11 +575,11 @@ def read_book(book_id):
                 images.append(f"/{folder_path}{file}")
 
         if len(images) == 0:
-            flash("❌ No pages found.", "danger")
+            flash("‼️ No pages found. ‼️", "danger")
             return redirect(url_for('my_books'))
 
     except:
-        flash("❌ ebook folder not found", "danger")
+        flash("‼️ ebook folder not found ‼️", "danger")
         return redirect(url_for('my_books'))
 
     return render_template("read.html", book=book, images=images)
@@ -604,11 +604,11 @@ def write_review(book_id):
             """, (book_id, score, review_text))
             conn.commit()
 
-            flash("✅ Review submitted!", "success")
+            flash("✅ Review submitted! ✅", "success")
             return redirect(url_for('book_detail', book_id=book_id))
 
         except Exception as e:
-            flash(f"❌ Error: {e}", "danger")
+            flash(f"❌ Error: {e} ❌", "danger")
 
         finally:
             cursor.close()
@@ -627,7 +627,7 @@ def return_book(book_id):
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # ลบคำสั่งยืมเฉพาะของ user นั้น
+        # delete book from user in order
         cursor.execute("""
             DELETE FROM `order`
             WHERE USER_ID = %s AND BOOKID = %s
@@ -636,12 +636,12 @@ def return_book(book_id):
         conn.commit()
 
         if cursor.rowcount > 0:
-            flash("📗 Returned", "success")
+            flash("✅ Returned 📗", "success")
         else:
-            flash("⚠️ No data", "warning")
+            flash("⚠️ No data ⚠️", "warning")
 
     except Exception as e:
-        flash(f"❌ error: {e}", "danger")
+        flash(f"❌ error: {e} ❌", "danger")
     finally:
         if cursor:
             cursor.close()
