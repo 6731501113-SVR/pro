@@ -108,11 +108,15 @@
         </h1>
         <div class="carousel-container">
             <div class="carousel-track">
-                {% for book in books[:5] %}
-                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                {% for book in books[:10] %}
+                <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
+                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                </a>
                 {% endfor %}
-                {% for book in books[:5] %}
-                <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                {% for book in books[:10] %}
+                <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
+                    <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
+                </a>
                 {% endfor %}
             </div>
         </div>
@@ -120,7 +124,7 @@
 
     <div class="section-title">Recommendations</div>
     <div class="book-grid">
-        {% for book in books[5:10] %}
+        {% for book in books[15:20] %}
         <div class="book-card ">
             <a class="text-decoration-none" href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
                 <img src="{{ book.BOOKIMAGE }}" alt="Book {{ book.BOOKID }}">
