@@ -84,34 +84,10 @@
             text-decoration: underline;
         }
 
-        .flash {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .flash.success {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .flash.danger {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
     </style>
     <div class="register-page">
         <div class="register-container">
             <h2>REGISTRATION</h2>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
 
             <form method="POST">
                 <div class="form-group">

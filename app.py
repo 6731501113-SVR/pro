@@ -214,16 +214,29 @@ def register():
 
         try:
             conn = get_db_connection()
-            cursor = conn.cursor()
+            cursor = conn.cursor(dictionary=True, buffered=True)
+
+            # ⭐ ตรวจสอบว่าอีเมลมีอยู่แล้วหรือยัง
+            cursor.execute("SELECT GMAIL FROM users WHERE GMAIL = %s", (gmail,))
+            existing = cursor.fetchone()
+
+            if existing:
+                flash("❌ Email already exists, please use another email.", "danger")
+                return redirect(url_for('register'))
+
+            # ไม่มีซ้ำ → INSERT
             cursor.execute("""
                 INSERT INTO users (FIRST_NAME, LAST_NAME, GMAIL, USER_PASSWORD, BIRTHDAY)
                 VALUES (%s, %s, %s, %s, %s)
             """, (first_name, last_name, gmail, password, birthday))
+            
             conn.commit()
             flash("✅ Register successful!", "success")
             return redirect(url_for('login'))
+
         except Error as e:
-            flash(f"‼️ Error: {e} ‼️", "danger")
+            flash(f"‼️ Database error: {e}", "danger")
+
         finally:
             if cursor:
                 cursor.close()

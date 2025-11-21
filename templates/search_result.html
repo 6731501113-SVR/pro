@@ -2,74 +2,84 @@
 {% block content %}
 
 <style>
-  .book-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
-  }
+    .book-grid {
+        display: grid;
+        margin-right: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
 
-  .book-card {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      transition: transform .2s, box-shadow .2s;
-      background: #fff;
-      text-align: center;
-      padding-bottom: 15px;
-  }
+    .book-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: 0.2s;
+    }
 
-  .book-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-  }
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
 
-  .book-card img {
-      width: 100%;
-      height: 230px;
-      object-fit: cover;
-  }
+    .book-image-frame {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
 
-  .book-title {
-      font-size: 1rem;
-      font-weight: bold;
-      margin-top: 10px;
-      text-decoration: none;
-      color: black;
-      display: block;
-  }
+    .book-image-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
 
-  .book-title:hover {
-      color: #007bff;
-  }
+    .book-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 8px;
+    }
+
+    .book-author {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 15px;
+    }
 </style>
 
 <div class="container mt-4">
-  <h2>🔍 Search: "{{ query }}"</h2>
+    <h2>🔍 Search: "{{ query }}"</h2>
 
-  {% if results %}
-  <div class="book-grid mt-3">
-    {% for book in results %}
-    <div class="book-card">
-      <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+    {% if results %}
+    <div class="book-grid mt-3">
+        {% for book in results %}
+        <div class="book-card">
 
-      <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="book-title">
-        {{ book.BOOKNAME }}
-      </a>
+            <a class="text-decoration-none" href="{{ url_for('book_detail', book_id=book.BOOKID) }}">
 
-      <p class="text-muted">{{ book.WRITER }}</p>
+                <div class="book-image-frame">
+                    <img src="{{ book.BOOKIMAGE }}" alt="{{ book.BOOKNAME }}">
+                </div>
 
-      <a href="{{ url_for('book_detail', book_id=book.BOOKID) }}" class="btn btn-primary btn-sm mt-2">
-        Detail
-      </a>
+                <div class="book-title">{{ book.BOOKNAME }}</div>
+                <div class="book-author">{{ book.WRITER }}</div>
+
+            </a>
+
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-
-  {% else %}
-  <div class="alert alert-warning mt-3">
-    Notfound "{{ query }}"
-  </div>
-  {% endif %}
+    {% else %}
+    <div class="alert alert-warning mt-3">
+        ไม่พบผลลัพธ์สำหรับ "{{ query }}"
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
