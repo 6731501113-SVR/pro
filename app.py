@@ -61,7 +61,7 @@ def search():
                 WHERE BOOKNAME LIKE %s OR WRITER LIKE %s
             """
             like_query = f"%{query}%"
-            cursor.execute(sql, (like_query, like_query, like_query))
+            cursor.execute(sql, (like_query, like_query))
             results = cursor.fetchall()
         except Exception as e:
             flash(f"❌ error: {e} ❌", "danger")
@@ -483,10 +483,12 @@ def checkout():
 
     return render_template('checkout.html', books=books, total_fee=total_fee)
 
+from flask import Flask, render_template, session, redirect, url_for, flash
+import mysql.connector
 
 @app.route('/my_book')
 def my_books():
-    #Check Login session
+    # ตรวจสอบ login session
     if 'user_id' not in session:
         flash("⚠️ Please log in first ⚠️", "warning")
         return redirect(url_for('login'))
@@ -497,9 +499,10 @@ def my_books():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # got data from order and join book
+        # ดึงข้อมูลหนังสือ + ORDER_DATE + RETURN_date (คืนหลัง 7 วัน)
         cursor.execute("""
-            SELECT b.*, o.ORDER_DATE
+            SELECT b.*, o.ORDER_DATE,
+                   DATE_ADD(o.ORDER_DATE, INTERVAL 7 DAY) AS RETURN_date
             FROM `order` o
             JOIN book b ON o.BOOKID = b.BOOKID
             WHERE o.USER_ID = %s
@@ -507,6 +510,7 @@ def my_books():
         """, (session['user_id'],))
 
         books = cursor.fetchall()
+
     except Exception as e:
         print(f"❌ Error fetching user books: {e} ❌")
         books = []
@@ -516,7 +520,9 @@ def my_books():
             cursor.close()
         if conn:
             conn.close()
+
     return render_template('my_book.html', books=books)
+
 
 @app.route('/preview/<int:book_id>')
 def preview_book(book_id):

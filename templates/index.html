@@ -85,16 +85,16 @@
         const track = document.querySelector(".carousel-track");
         const images = Array.from(track.children);
 
-        // ทำซ้ำรูปทั้งหมดอีก 1 ชุด เพื่อให้วนต่อเนื่อง
+        // loop one more time
         track.innerHTML += track.innerHTML;
 
         let scrollX = 0;
-        const speed = 0.5; // ปรับความเร็ว (px ต่อ frame)
+        const speed = 0.5; // Change speed (px ต่อ frame)
 
         function animate() {
             scrollX += speed;
             if (scrollX >= track.scrollWidth / 2) {
-                scrollX = 0; // รีเซ็ตเมื่อถึงครึ่งหนึ่ง
+                scrollX = 0; // reset when half to garantee infinite loop
             }
             track.style.transform = `translateX(-${scrollX}px)`;
             requestAnimationFrame(animate);
