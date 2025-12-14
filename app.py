@@ -466,8 +466,8 @@ def checkout():
             cursor = conn.cursor()
             for book_id in cart:
                 cursor.execute("""
-                    INSERT INTO `order` (BOOKID, USER_ID, ORDER_DATE)
-                    VALUES (%s, %s, CURRENT_TIMESTAMP())
+                    INSERT INTO `order` (BOOKID, USER_ID, ORDER_DATE, RETURN_date)
+                    VALUES (%s, %s, CURRENT_TIMESTAMP(), DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 7 DAY))
                 """, (book_id, session['user_id']))
             conn.commit()
             flash(f"✅ Borrowd! total Pay {total_fee} Bath ✅", "success")
